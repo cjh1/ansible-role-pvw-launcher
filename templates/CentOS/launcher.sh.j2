@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export DISPLAY=:{{x_port}}
+export PYTHONPATH={{paraview_versioned_lib_directory}}/site-packages
+export LD_LIBRARY_PATH={{paraview_versioned_lib_directory}}:{{pvw_launcher_library_path}}
+{{paraview_install_path}}/bin/pvpython {{paraview_versioned_lib_directory}}/site-packages/vtk/web/launcher.py {{pvw_launcher_config_file_path}}

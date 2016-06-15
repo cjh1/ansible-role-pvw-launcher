@@ -1,0 +1,31 @@
+{
+
+      "configuration": {
+        "host" : "localhost",
+        "port" : 9000,
+        "endpoint": "paraview",
+        "proxy_file" : "{{proxy_db_path}}",
+        "sessionURL" : "ws://{{ hostname }}:{{port|default(80)}}/proxy?sessionId=${id}&path=ws",
+        "timeout" : 10,
+        "log_dir" : "/var/log/paraview/",
+        "fields" : ["host", "port"]
+      },
+
+      "resources" : [ { "host" : "localhost", "port_range" : [9001, 9999] } ],
+
+      "properties" : {
+        "python_exec" : "{{paraview_install_path}}/bin/pvpython",
+        "visualizer" : "{{paraview_versioned_lib_directory}}/site-packages/paraview/web/pv_web_visualizer.py",
+      },
+
+
+      "apps" : {
+        "visualizer": {
+          "cmd" : [
+            "${python_exec}", "${visualizer}", "--port", "${port}", "--data-dir", "${data_dir}" {{ ', "--mesa-llvm"' if virtualbox or not gpu else '' }}
+              ],
+          "ready_line" : "Starting factory"
+        }
+     }
+}
+

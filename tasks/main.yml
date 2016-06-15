@@ -1,0 +1,64 @@
+- name: Find ParaView version directory
+  find:
+    paths="{{paraview_install_path}}/lib"
+    patterns="paraview-*"
+    recurse=yes
+    file_type=directory
+  register: paraview_find
+  tags:
+    - launcher
+
+- name: Set ParaView versioned library directory
+  set_fact:
+    paraview_versioned_lib_directory: "{{paraview_find.files[0].path}}"
+  tags:
+    - launcher
+
+- name: Find ParaView version shared directory
+  find:
+    paths="{{paraview_install_path}}/share"
+    patterns="paraview-*"
+    recurse=yes
+    file_type=directory
+  register: paraview_shared_find
+  tags:
+    - launcher
+
+- name: Set ParaView versioned shared directory
+  set_fact:
+    paraview_versioned_shared_directory: "{{paraview_shared_find.files[0].path}}"
+  tags:
+    - launcher
+
+- name: Create ParaView log directory
+  become: yes
+  become_user: root
+  file:
+    path={{pvw_launcher_log_path}}
+    owner={{pvw_user}}
+    group={{pvw_user}}
+    state=directory
+  tags:
+    - launcher
+
+- name: Create ParaViewWeb configuration directory
+  become: yes
+  become_user: root
+  file:
+    path={{pvw_launcher_config_file_path | dirname}} state=directory
+  tags:
+    - launcher
+
+
+- name: Template launcher config
+  become: yes
+  become_user: root
+  template:
+    src={{pvw_launcher_template}}
+    dest={{pvw_launcher_config_file_path}}
+    mode=644 owner={{pvw_user}}
+  when: pvw_launcher_template
+  tags:
+    - launcher
+
+- include: ./{{ ansible_distribution }}.yml

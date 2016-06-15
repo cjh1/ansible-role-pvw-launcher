@@ -1,0 +1,8 @@
+---
+pvw_user: "{{ansible_user | default(default_user)}}"
+paraview_install_path: /opt/paraview
+pvw_launcher_log_path: /var/log/paraview
+pvw_launcher_config_path: /etc/opt/paraview
+pvw_launcher_config_file_path: "{{pvw_launcher_config_path}}/launcher.conf"
+pvw_launcher_template: launcher.json.j2
+pvw_launcher_library_path: ""
